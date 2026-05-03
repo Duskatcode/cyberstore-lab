@@ -12,8 +12,8 @@ async function bootstrap() {
   app.use(helmet());
 
   app.enableCors({
-    origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173',
-    credentials: true,
+  origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:8080',
+  credentials: true,
   });
 
   app.useGlobalPipes(
@@ -24,6 +24,7 @@ async function bootstrap() {
     }),
   );
 
+  if (process.env.ENABLE_SWAGGER === 'true') {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('CyberStore Lab API')
     .setDescription('Secure MVP API for CyberStore Lab')
@@ -33,6 +34,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/v1/docs', app, document);
+}
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);

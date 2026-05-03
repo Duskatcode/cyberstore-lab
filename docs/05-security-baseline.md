@@ -1,137 +1,66 @@
-005 — blocked_user no será rol
+# Security Baseline — CyberStore Lab
 
-Security Baseline — CyberStore Lab
-Principio principal
+## Objetivo
 
-El MVP debe nacer seguro.
+Definir una línea base segura para el MVP antes de introducir vulnerabilidades controladas o ejecutar pruebas con OWASP ZAP, Burp Suite y Nmap.
 
-Las vulnerabilidades intencionales se crearán después en una rama separada:
+## Estado actual
 
-lab/vulnerable
-Controles mínimos desde el inicio
-Helmet
-CORS estricto
-ValidationPipe
-DTOs estrictos
-hash de password
-access token corto
-refresh token rotativo
-logout real
-errores internos ocultos en producción
-logs estructurados básicos
-rate limiting suave
-registro de intentos fallidos
-guards por rol
-guards por ownership
-Autenticación
+```txt
+- NestJS API bajo /api/v1.
+- Nginx como entrada única en localhost:8080.
+- Frontend React servido por Vite detrás de Nginx.
+- PostgreSQL como base principal.
+- Redis para carrito temporal.
+- JWT access token + refresh token.
+- Roles: admin, seller, customer.
+- Productos públicos.
+- Carrito autenticado.
+- Checkout simulado transaccional.
+Controles aplicados
+- Helmet activo.
+- ValidationPipe global con whitelist.
+- forbidNonWhitelisted activo.
+- transform activo.
+- CORS limitado por FRONTEND_ORIGIN.
+- Swagger controlado por ENABLE_SWAGGER.
+- Rate limiting global con @nestjs/throttler.
+- JWT access token de corta duración.
+- Refresh token hasheado en base de datos.
+- Logout revoca refresh token.
+- RolesGuard para rutas admin/seller.
+- Ownership checks para productos seller y pedidos customer.
+- Nginx usa resolver dinámico para backend/frontend en red Podman.
+Rate limit validado
 
-Debe incluir:
+Configuración actual:
 
-registro
-login
-access token
-refresh token
-refresh token rotativo
-logout
-blacklist/token tracking en Redis
-hash de password
+100 requests por minuto por cliente.
 
-No incluir todavía:
+Validación ejecutada:
 
-MFA
-OAuth externo
-verificación de correo real
-recuperación real de contraseña
-Autorización
+for i in {1..120}; do
+  curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8080/api/v1/products
+done
 
-Capas necesarias:
+Resultado esperado:
 
-Role Guard
-Ownership Guard
-Status Guard
+200 iniciales
+429 después de superar el límite
+Decisiones
+- Swagger se permite en laboratorio local con ENABLE_SWAGGER=true.
+- En despliegue expuesto debe apagarse o protegerse.
+- El carrito vive en Redis con TTL.
+- El checkout descuenta stock solo dentro de una transacción.
+- Los errores de login no deben revelar si el usuario existe.
+- Los tokens no deben persistirse en localStorage en esta versión.
+- El perfil vulnerable debe ir separado de la lógica segura principal.
+Riesgos pendientes
+- Falta rate limit específico para /auth/login.
+- Falta bloqueo temporal por intentos fallidos.
+- Falta sanitización/logging defensivo avanzado.
+- Falta CSRF si se migra a cookies.
+- Falta refresh automático en frontend.
+- Falta HTTPS real para despliegue fuera de localhost.
+- Falta pipeline SAST/dependency audit.
 
-Ejemplo:
-
-seller puede editar producto propio
-seller no puede editar producto de otro seller
-admin puede moderar cualquier producto
-customer solo puede ver sus pedidos
-Validación de entrada
-
-Toda entrada HTTP debe pasar por DTOs.
-
-Reglas esperadas:
-
-whitelist: true
-forbidNonWhitelisted: true
-transform: true
-Manejo de errores
-
-En desarrollo se permite mayor detalle técnico.
-
-En producción no se deben exponer:
-
-stack traces
-queries SQL
-errores internos de Prisma
-paths internos del servidor
-tokens
-variables de entorno
-
-Respuesta correcta en producción:
-
-{
-  "statusCode": 500,
-  "message": "Internal server error",
-  "requestId": "req_abc123"
-}
-CORS
-
-Origen inicial permitido:
-
-http://localhost
-
-Cuando haya frontend separado en desarrollo:
-
-http://localhost:5173
-Rate limiting inicial
-
-Objetivos:
-
-login
-refresh token
-registro
-checkout
-OWASP Top 10 relacionado
-
-Puntos especialmente relevantes:
-
-Broken Access Control
-Cryptographic Failures
-Injection
-Security Misconfiguration
-Identification and Authentication Failures
-Software and Data Integrity Failures
-Security Logging and Monitoring Failures
-Regla para Kali / ZAP / Burp
-No se prueba contra producción real.
-No se prueba contra terceros.
-Solo se prueba contra el laboratorio propio.
-Los hallazgos se documentan en docs/security-reports.
-
-Decisión
-
-blocked_user no será un rol.
-
-Razón
-
-Bloqueado es un estado operativo, no una identidad funcional.
-
-Correcto
-role: seller
-status: blocked
-Incorrecto
-role: blocked_user
-Estado
-
-Aceptada.
