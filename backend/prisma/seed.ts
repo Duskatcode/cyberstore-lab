@@ -1,20 +1,18 @@
+import { PrismaClient } from '../src/generated/prisma/client';
 import {
-  PrismaClient,
   ProductStatus,
   ProductType,
   UserRoleName,
   UserStatus,
-} from '../src/generated/prisma/client';
+} from '../src/generated/prisma/enums';
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
 
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
+  connectionString: process.env.DATABASE_URL,
 });
 
-const prisma = new PrismaClient({
-  adapter,
-});
+const prisma = new PrismaClient({ adapter });
 
 const PASSWORD = 'CyberStore123!';
 
