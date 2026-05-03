@@ -60,6 +60,15 @@ export const OrderStatus = {
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 
+export const StockMovementType = {
+  in: 'in',
+  out: 'out',
+  adjustment: 'adjustment'
+} as const
+
+export type StockMovementType = (typeof StockMovementType)[keyof typeof StockMovementType]
+
+
 export const AuditAction = {
   user_created: 'user_created',
   user_login: 'user_login',
