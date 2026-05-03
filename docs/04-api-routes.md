@@ -48,3 +48,46 @@ Decisiones
 Validación Redis
 podman compose exec redis redis-cli TTL "cart:user:{userId}"
 
+
+---
+
+# Checkout / Orders
+
+## Customer
+
+Requiere Bearer token con rol `customer`.
+
+```txt
+POST /api/v1/checkout
+GET  /api/v1/orders
+GET  /api/v1/orders/:id
+eof
+
+---
+
+# Checkout / Orders
+
+## Customer
+
+Requiere Bearer token con rol `customer`.
+
+```txt
+POST /api/v1/checkout
+GET  /api/v1/orders
+GET  /api/v1/orders/:id
+Decisiones
+- El checkout lee el carrito desde Redis.
+- El pedido inicia como pending.
+- Si paymentSuccess=false, el pedido pasa a payment_failed y no descuenta stock.
+- Si paymentSuccess=true, el pedido pasa a paid.
+- El stock se descuenta dentro de una transacción.
+- Los order_items guardan snapshot del producto comprado.
+- El historial se guarda en order_status_history.
+- Los movimientos de stock se guardan en stock_movements.
+- El carrito se elimina de Redis solo si el pedido queda paid.
+Validaciones
+podman compose exec redis redis-cli EXISTS "cart:user:{userId}"
+podman compose exec postgres psql -U cyberstore -d cyberstore_db -c "SELECT status FROM orders ORDER BY created_at DESC LIMIT 5;"
+podman compose exec postgres psql -U cyberstore -d cyberstore_db -c "SELECT product_name_snapshot, quantity FROM order_items ORDER BY created_at DESC LIMIT 5;"
+podman compose exec postgres psql -U cyberstore -d cyberstore_db -c "SELECT type, quantity, reason FROM stock_movements ORDER BY created_at DESC LIMIT 5;"
+

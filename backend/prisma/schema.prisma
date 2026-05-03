@@ -44,6 +44,12 @@ enum OrderStatus {
   refunded
 }
 
+enum StockMovementType {
+  in
+  out
+  adjustment
+}
+
 enum AuditAction {
   user_created
   user_login
@@ -128,7 +134,8 @@ model Product {
   imageUrl    String?       @map("image_url")
   deletedAt   DateTime?     @map("deleted_at")
 
-  orderItems OrderItem[]
+  orderItems     OrderItem[]
+  stockMovements StockMovement[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -151,7 +158,9 @@ model Order {
   cancellationReason String?   @map("cancellation_reason")
   cancelledAt        DateTime? @map("cancelled_at")
 
-  items OrderItem[]
+  items          OrderItem[]
+  statusHistory  OrderStatusHistory[]
+  stockMovements StockMovement[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -228,4 +237,34 @@ model AuditLog {
   @@index([action])
   @@index([entity, entityId])
   @@map("audit_logs")
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(uuid())
+  orderId   String      @map("order_id")
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus
+  comment   String?
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@index([status])
+  @@map("order_status_history")
+}
+
+model StockMovement {
+  id        String            @id @default(uuid())
+  productId String            @map("product_id")
+  product   Product           @relation(fields: [productId], references: [id])
+  orderId   String?           @map("order_id")
+  order     Order?            @relation(fields: [orderId], references: [id])
+  type      StockMovementType
+  quantity  Int
+  reason    String?
+  createdAt DateTime          @default(now()) @map("created_at")
+
+  @@index([productId])
+  @@index([orderId])
+  @@index([type])
+  @@map("stock_movements")
 }
