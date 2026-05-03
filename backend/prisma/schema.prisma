@@ -1,13 +1,229 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum UserRoleName {
+  admin
+  seller
+  customer
+}
+
+enum UserStatus {
+  active
+  blocked
+  suspended
+  pending_verification
+}
+
+enum ProductType {
+  physical
+  digital
+}
+
+enum ProductStatus {
+  draft
+  pending_review
+  active
+  inactive
+  rejected
+  out_of_stock
+  deleted
+}
+
+enum OrderStatus {
+  pending
+  paid
+  payment_failed
+  cancelled
+  refunded
+}
+
+enum AuditAction {
+  user_created
+  user_login
+  user_logout
+  user_blocked
+  user_unblocked
+  product_created
+  product_updated
+  product_approved
+  product_rejected
+  product_disabled
+  order_created
+  order_paid
+  order_cancelled
+  refresh_token_created
+  refresh_token_revoked
+}
+
+model Role {
+  id        String       @id @default(uuid())
+  name      UserRoleName @unique
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  users User[]
+
+  @@map("roles")
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  name         String
+  status       UserStatus @default(active)
+
+  roleId String @map("role_id")
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  products      Product[]
+  orders        Order[]
+  refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]     @relation("AuditActor")
+  moderatedLogs AuditLog[]     @relation("AuditTargetUser")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([roleId])
+  @@index([status])
+  @@map("users")
+}
+
+model Category {
+  id          String  @id @default(uuid())
+  name        String
+  slug        String  @unique
+  description String?
+
+  products Product[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("categories")
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  sellerId    String        @map("seller_id")
+  seller      User          @relation(fields: [sellerId], references: [id])
+  categoryId  String        @map("category_id")
+  category    Category      @relation(fields: [categoryId], references: [id])
+  name        String
+  slug        String        @unique
+  description String?
+  type        ProductType
+  status      ProductStatus @default(draft)
+  priceCents  Int           @map("price_cents")
+  currency    String        @default("COP")
+  stock       Int           @default(0)
+  imageUrl    String?       @map("image_url")
+  deletedAt   DateTime?     @map("deleted_at")
+
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([sellerId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([type])
+  @@map("products")
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  customerId String      @map("customer_id")
+  customer   User        @relation(fields: [customerId], references: [id])
+  status     OrderStatus @default(pending)
+  totalCents Int         @map("total_cents")
+  currency   String      @default("COP")
+
+  cancellationReason String?   @map("cancellation_reason")
+  cancelledAt        DateTime? @map("cancelled_at")
+
+  items OrderItem[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([customerId])
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderItem {
+  id      String @id @default(uuid())
+  orderId String @map("order_id")
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String  @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+
+  sellerId String @map("seller_id")
+
+  productNameSnapshot  String      @map("product_name_snapshot")
+  productSlugSnapshot  String      @map("product_slug_snapshot")
+  productTypeSnapshot  ProductType @map("product_type_snapshot")
+  productImageSnapshot String?     @map("product_image_snapshot")
+
+  unitPriceCents Int @map("unit_price_cents")
+  quantity       Int
+  subtotalCents  Int @map("subtotal_cents")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([sellerId])
+  @@map("order_items")
+}
+
+model RefreshToken {
+  id           String    @id @default(uuid())
+  userId       String    @map("user_id")
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash    String    @unique @map("token_hash")
+  expiresAt    DateTime  @map("expires_at")
+  revokedAt    DateTime? @map("revoked_at")
+  replacedById String?   @map("replaced_by_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model AuditLog {
+  id String @id @default(uuid())
+
+  actorId String? @map("actor_id")
+  actor   User?   @relation("AuditActor", fields: [actorId], references: [id])
+
+  targetUserId String? @map("target_user_id")
+  targetUser   User?   @relation("AuditTargetUser", fields: [targetUserId], references: [id])
+
+  action   AuditAction
+  entity   String?
+  entityId String?     @map("entity_id")
+  metadata Json?
+
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([actorId])
+  @@index([targetUserId])
+  @@index([action])
+  @@index([entity, entityId])
+  @@map("audit_logs")
 }

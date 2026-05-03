@@ -96,3 +96,54 @@ Redis es excelente para datos temporales, cache, rate limiting y sesiones, pero 
 Estado
 
 Aceptada.
+---
+
+# Migración inicial aplicada
+
+## Paso
+
+Paso 6 — Configurar Prisma.
+
+## Modelos iniciales creados
+
+```txt
+Role
+User
+Category
+Product
+Order
+OrderItem
+RefreshToken
+AuditLog
+
+---
+
+# Migración inicial aplicada
+
+## Paso
+
+Paso 6 — Configurar Prisma.
+
+## Modelos iniciales creados
+
+```txt
+Role
+User
+Category
+Product
+Order
+OrderItem
+RefreshToken
+AuditLog
+Decisiones aplicadas
+blocked_user no es rol; blocked es estado.
+Los productos usan soft delete mediante deleted_at.
+Los pedidos guardan snapshots en order_items.
+PostgreSQL es la fuente principal de persistencia.
+Redis se mantiene para carrito, tokens, rate limiting y datos temporales.
+Comando usado
+podman compose exec backend npx prisma migrate dev --name init
+Validación
+podman compose exec backend npx prisma validate
+podman compose exec postgres psql -U cyberstore -d cyberstore_db -c "\dt"
+
