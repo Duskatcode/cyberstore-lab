@@ -147,3 +147,51 @@ Validación
 podman compose exec backend npx prisma validate
 podman compose exec postgres psql -U cyberstore -d cyberstore_db -c "\dt"
 
+
+---
+
+# Seeds iniciales
+
+## Paso
+
+Paso 7 — Crear seeds iniciales.
+
+## Datos creados
+
+```txt
+roles:
+- admin
+- seller
+- customer
+
+usuarios:
+- admin@cyberstore.lab
+- seller@cyberstore.lab
+- customer@cyberstore.lab
+
+categorías:
+- hardware
+- networking
+- accessories
+- digital
+
+productos iniciales:
+- mini-pc-corelab
+- ssd-safestore-480gb
+- wifi-adapter-netprobe
+- ethernet-cat6-pro
+- owasp-checklist
+Contraseña local de desarrollo
+CyberStore123!
+Advertencia
+
+Esta contraseña es solo para laboratorio local. No debe usarse en producción ni en entornos públicos.
+
+Comando usado
+podman compose exec backend npx prisma db seed
+Validación
+podman compose exec postgres psql -U cyberstore -d cyberstore_db -c "SELECT name FROM roles ORDER BY name;"
+podman compose exec postgres psql -U cyberstore -d cyberstore_db -c "SELECT email, status FROM users ORDER BY email;"
+podman compose exec postgres psql -U cyberstore -d cyberstore_db -c "SELECT name, slug FROM categories ORDER BY slug;"
+podman compose exec postgres psql -U cyberstore -d cyberstore_db -c "SELECT name, slug, status, price_cents, stock FROM products ORDER BY slug;"
+
