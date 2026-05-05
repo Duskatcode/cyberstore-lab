@@ -9,6 +9,7 @@ import { CheckoutModule } from './modules/checkout/checkout.module';
 import { ProductsModule } from './modules/products/products.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
+import { VulnerableLabModule } from './modules/vulnerable-lab/vulnerable-lab.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { RedisModule } from './redis/redis.module';
     ProductsModule,
     CartModule,
     CheckoutModule,
+    VulnerableLabModule,
   ],
   controllers: [AppController],
   providers: [
