@@ -21,7 +21,7 @@ export function OrdersPage() {
   }, []);
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-4 md:p-8">
       <section className="mx-auto max-w-5xl">
         <h1 className="text-3xl font-bold">Mis pedidos</h1>
         <p className="mt-2 text-slate-600">Historial de compras del usuario customer.</p>

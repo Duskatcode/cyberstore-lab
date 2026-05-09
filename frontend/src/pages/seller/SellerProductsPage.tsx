@@ -51,7 +51,7 @@ export function SellerProductsPage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen p-4 md:p-8">
         <section className="mx-auto max-w-5xl">
           <h1 className="text-3xl font-bold">Seller Products</h1>
           <p className="mt-4 text-slate-600">Debes iniciar sesión como seller.</p>
@@ -65,7 +65,7 @@ export function SellerProductsPage() {
 
   if (user.role !== 'seller') {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen p-4 md:p-8">
         <section className="mx-auto max-w-5xl">
           <h1 className="text-3xl font-bold">Acceso denegado</h1>
           <p className="mt-4 text-slate-600">Esta sección requiere rol seller.</p>
@@ -75,7 +75,7 @@ export function SellerProductsPage() {
   }
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-4 md:p-8">
       <section className="mx-auto max-w-6xl">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
@@ -105,7 +105,7 @@ export function SellerProductsPage() {
           <p className="mt-8 text-slate-600">Todavía no tienes productos.</p>
         ) : (
           <div className="mt-8 overflow-x-auto rounded-2xl border border-slate-200">
-            <table className="w-full border-collapse text-left text-sm">
+            <table className="w-full min-w-[720px] border-collapse text-left text-sm">
               <thead className="bg-slate-50">
                 <tr>
                   <th className="p-4">Producto</th>

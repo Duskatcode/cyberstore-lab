@@ -38,7 +38,7 @@ export function ProductsPage() {
   }
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-4 md:p-8">
       <section className="mx-auto max-w-6xl">
         <h1 className="text-3xl font-bold">Productos</h1>
         <p className="mt-2 text-slate-600">Catálogo público cargado desde el backend.</p>
@@ -49,7 +49,7 @@ export function ProductsPage() {
           </div>
         )}
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => (
             <article key={product.id} className="rounded-2xl border border-slate-200 p-5 shadow-sm">
               <p className="text-xs uppercase tracking-widest text-slate-500">

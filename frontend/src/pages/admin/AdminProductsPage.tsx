@@ -62,7 +62,7 @@ export function AdminProductsPage() {
     : products;
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-4 md:p-8">
       <section className="mx-auto max-w-6xl">
         <h1 className="text-3xl font-bold">Moderación de productos</h1>
         <p className="mt-2 text-slate-600">
@@ -89,7 +89,7 @@ export function AdminProductsPage() {
         </div>
 
         <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200">
-          <table className="w-full border-collapse text-left text-sm">
+          <table className="w-full min-w-[720px] border-collapse text-left text-sm">
             <thead className="bg-slate-50">
               <tr>
                 <th className="p-4">Producto</th>

@@ -56,7 +56,7 @@ export function CartPage() {
   }
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-4 md:p-8">
       <section className="mx-auto max-w-4xl">
         <h1 className="text-3xl font-bold">Carrito</h1>
 

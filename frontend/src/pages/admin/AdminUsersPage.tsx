@@ -82,7 +82,7 @@ export function AdminUsersPage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen p-4 md:p-8">
         <section className="mx-auto max-w-6xl">
           <h1 className="text-3xl font-bold">Admin Users</h1>
           <p className="mt-4 text-slate-600">Debes iniciar sesión como admin.</p>
@@ -93,7 +93,7 @@ export function AdminUsersPage() {
 
   if (user.role !== 'admin') {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen p-4 md:p-8">
         <section className="mx-auto max-w-6xl">
           <h1 className="text-3xl font-bold">Acceso denegado</h1>
           <p className="mt-4 text-slate-600">Esta sección requiere rol admin.</p>
@@ -107,7 +107,7 @@ export function AdminUsersPage() {
     : users;
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-4 md:p-8">
       <section className="mx-auto max-w-6xl">
         <h1 className="text-3xl font-bold">Administración de usuarios</h1>
         <p className="mt-2 text-slate-600">
@@ -122,7 +122,7 @@ export function AdminUsersPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="mt-8 grid gap-4 rounded-2xl border border-slate-200 p-6 md:grid-cols-2"
+          className="mt-8 grid gap-4 rounded-2xl border border-slate-200 p-4 md:p-6 md:grid-cols-2"
         >
           <label className="block">
             <span className="text-sm font-medium">Email</span>
@@ -216,7 +216,7 @@ export function AdminUsersPage() {
         </div>
 
         <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200">
-          <table className="w-full border-collapse text-left text-sm">
+          <table className="w-full min-w-[720px] border-collapse text-left text-sm">
             <thead className="bg-slate-50">
               <tr>
                 <th className="p-4">Usuario</th>

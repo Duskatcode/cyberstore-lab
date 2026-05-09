@@ -1,6 +1,6 @@
 export function HomePage() {
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-4 md:p-8">
       <section className="mx-auto max-w-5xl">
         <p className="text-sm uppercase tracking-widest text-slate-500">
           CyberStore Lab

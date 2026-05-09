@@ -167,7 +167,7 @@ export function SellerProductFormPage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen p-4 md:p-8">
         <section className="mx-auto max-w-3xl">
           <h1 className="text-3xl font-bold">Seller product form</h1>
           <p className="mt-4 text-slate-600">Debes iniciar sesión como seller.</p>
@@ -181,7 +181,7 @@ export function SellerProductFormPage() {
 
   if (user.role !== 'seller') {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen p-4 md:p-8">
         <section className="mx-auto max-w-3xl">
           <h1 className="text-3xl font-bold">Acceso denegado</h1>
           <p className="mt-4 text-slate-600">Esta sección requiere rol seller.</p>
@@ -192,7 +192,7 @@ export function SellerProductFormPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen p-4 md:p-8">
         <section className="mx-auto max-w-3xl">
           <p>Cargando...</p>
         </section>
@@ -201,7 +201,7 @@ export function SellerProductFormPage() {
   }
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-4 md:p-8">
       <section className="mx-auto max-w-3xl">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -224,7 +224,7 @@ export function SellerProductFormPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5 rounded-2xl border border-slate-200 p-6">
+        <form onSubmit={handleSubmit} className="mt-8 space-y-5 rounded-2xl border border-slate-200 p-4 md:p-6">
           <label className="block">
             <span className="text-sm font-medium">Nombre</span>
             <input

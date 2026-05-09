@@ -36,8 +36,8 @@ export function RegisterPage() {
   }
 
   return (
-    <main className="min-h-screen p-8">
-      <section className="mx-auto max-w-md rounded-2xl border border-slate-200 p-6 shadow-sm">
+    <main className="min-h-screen p-4 md:p-8">
+      <section className="mx-auto max-w-md rounded-2xl border border-slate-200 p-4 md:p-6 shadow-sm">
         <h1 className="text-3xl font-bold">Registro customer</h1>
 
         <p className="mt-2 text-slate-600">
