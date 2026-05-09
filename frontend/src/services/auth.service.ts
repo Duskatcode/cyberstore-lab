@@ -6,8 +6,19 @@ export type LoginPayload = {
   password: string;
 };
 
+export type RegisterPayload = {
+  email: string;
+  name: string;
+  password: string;
+};
+
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
   const response = await api.post<LoginResponse>('/auth/login', payload);
+  return response.data;
+}
+
+export async function register(payload: RegisterPayload): Promise<LoginResponse> {
+  const response = await api.post<LoginResponse>('/auth/register', payload);
   return response.data;
 }
 

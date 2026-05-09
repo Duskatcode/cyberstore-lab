@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
-import { getProducts } from '../../services/products.service';
+import { getCategories } from '../../services/categories.service';
 import {
   createSellerProduct,
   getSellerProducts,
   updateSellerProduct,
 } from '../../services/seller-products.service';
 import { useAuthStore } from '../../stores/auth.store';
-import type { Category, Product, ProductType } from '../../types/product.types';
+import type { Category, ProductType } from '../../types/product.types';
 
 type FormState = {
   name: string;
@@ -49,37 +49,24 @@ export function SellerProductFormPage() {
   const user = useAuthStore((state) => state.user);
 
   const [form, setForm] = useState<FormState>(initialForm);
-  const [publicProducts, setPublicProducts] = useState<Product[]>([]);
-  const [sellerProducts, setSellerProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(Boolean(id));
+
   const isEditing = Boolean(id);
-
-  const categories = useMemo(() => {
-    const map = new Map<string, Category>();
-
-    for (const product of publicProducts) {
-      if (product.category) {
-        map.set(product.category.id, product.category);
-      }
-    }
-
-    return Array.from(map.values());
-  }, [publicProducts]);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const [products, mine] = await Promise.all([
-          getProducts(),
+        const [categoriesData, sellerProducts] = await Promise.all([
+          getCategories(),
           getSellerProducts(),
         ]);
 
-        setPublicProducts(products);
-        setSellerProducts(mine);
+        setCategories(categoriesData);
 
         if (!id) {
-          const firstCategoryId = products.find((product) => product.category)?.category?.id;
+          const firstCategoryId = categoriesData[0]?.id;
 
           if (firstCategoryId) {
             setForm((current) => ({
@@ -91,7 +78,7 @@ export function SellerProductFormPage() {
           return;
         }
 
-        const product = mine.find((item) => item.id === id);
+        const product = sellerProducts.find((item) => item.id === id);
 
         if (!product) {
           setMessage('No se encontró el producto o no pertenece al seller actual.');
@@ -168,10 +155,8 @@ export function SellerProductFormPage() {
     try {
       if (id) {
         await updateSellerProduct(id, payload);
-        setMessage('Producto actualizado.');
       } else {
         await createSellerProduct(payload);
-        setMessage('Producto creado como draft.');
       }
 
       navigate('/seller/products');
@@ -346,12 +331,6 @@ export function SellerProductFormPage() {
             {isEditing ? 'Guardar cambios' : 'Crear producto'}
           </button>
         </form>
-
-        {sellerProducts.length > 0 && (
-          <p className="mt-4 text-xs text-slate-500">
-            Productos cargados del seller actual: {sellerProducts.length}
-          </p>
-        )}
       </section>
     </main>
   );

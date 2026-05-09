@@ -11,6 +11,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { VulnerableLabModule } from './modules/vulnerable-lab/vulnerable-lab.module';
 import { AdminUsersModule } from './modules/admin-users/admin-users.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AdminUsersModule } from './modules/admin-users/admin-users.module';
         },
       ],
     }),
+    CategoriesModule,
     AdminUsersModule,
     PrismaModule,
     RedisModule,
