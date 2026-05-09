@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import { Navigate } from 'react-router';
 import { useAuthStore } from '../stores/auth.store';
 import type { UserRole } from '../types/auth.types';
 
 type ProtectedRouteProps = {
   allowedRoles?: UserRole[];
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export function ProtectedRoute({ allowedRoles, children }: ProtectedRouteProps) {
