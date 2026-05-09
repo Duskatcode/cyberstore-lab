@@ -10,6 +10,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { VulnerableLabModule } from './modules/vulnerable-lab/vulnerable-lab.module';
+import { AdminUsersModule } from './modules/admin-users/admin-users.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { VulnerableLabModule } from './modules/vulnerable-lab/vulnerable-lab.mod
         },
       ],
     }),
+    AdminUsersModule,
     PrismaModule,
     RedisModule,
     AuthModule,

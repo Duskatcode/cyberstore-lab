@@ -1,5 +1,6 @@
 import { Link, Route, Routes } from 'react-router';
 import { CartPage } from './pages/account/CartPage';
+import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { HomePage } from './pages/public/HomePage';
@@ -15,7 +16,7 @@ function App() {
   return (
     <>
       <header className="border-b border-slate-200 px-8 py-4">
-        <nav className="mx-auto flex max-w-5xl items-center gap-4">
+        <nav className="mx-auto flex max-w-6xl items-center gap-4">
           <Link to="/" className="font-semibold">
             CyberStore Lab
           </Link>
@@ -23,15 +24,25 @@ function App() {
           <Link to="/products">Productos</Link>
           <Link to="/cart">Carrito</Link>
 
-          {user?.role === 'seller' ? <Link to="/seller/products">Seller</Link> : null}
+          {user?.role === 'seller' ? (
+            <Link to="/seller/products">Seller</Link>
+          ) : null}
 
-          <Link to="/login">Login</Link>
+          {user?.role === 'admin' ? (
+            <Link to="/admin/users">Admin Users</Link>
+          ) : null}
+
+          {!user ? <Link to="/login">Login</Link> : null}
 
           <div className="ml-auto flex items-center gap-3 text-sm">
             {user ? (
               <>
                 <span>{user.email}</span>
-                <span className="rounded bg-slate-100 px-2 py-1 text-xs">{user.role}</span>
+
+                <span className="rounded bg-slate-100 px-2 py-1 text-xs">
+                  {user.role}
+                </span>
+
                 <button className="rounded border px-3 py-1" onClick={clearSession}>
                   Salir local
                 </button>
@@ -53,6 +64,8 @@ function App() {
         <Route path="/seller/products" element={<SellerProductsPage />} />
         <Route path="/seller/products/new" element={<SellerProductFormPage />} />
         <Route path="/seller/products/:id/edit" element={<SellerProductFormPage />} />
+
+        <Route path="/admin/users" element={<AdminUsersPage />} />
       </Routes>
     </>
   );
