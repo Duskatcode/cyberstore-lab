@@ -4,6 +4,8 @@ import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { HomePage } from './pages/public/HomePage';
 import { ProductsPage } from './pages/public/ProductsPage';
+import { SellerProductFormPage } from './pages/seller/SellerProductFormPage';
+import { SellerProductsPage } from './pages/seller/SellerProductsPage';
 import { useAuthStore } from './stores/auth.store';
 
 function App() {
@@ -20,12 +22,16 @@ function App() {
 
           <Link to="/products">Productos</Link>
           <Link to="/cart">Carrito</Link>
+
+          {user?.role === 'seller' ? <Link to="/seller/products">Seller</Link> : null}
+
           <Link to="/login">Login</Link>
 
           <div className="ml-auto flex items-center gap-3 text-sm">
             {user ? (
               <>
                 <span>{user.email}</span>
+                <span className="rounded bg-slate-100 px-2 py-1 text-xs">{user.role}</span>
                 <button className="rounded border px-3 py-1" onClick={clearSession}>
                   Salir local
                 </button>
@@ -43,6 +49,10 @@ function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+        <Route path="/seller/products" element={<SellerProductsPage />} />
+        <Route path="/seller/products/new" element={<SellerProductFormPage />} />
+        <Route path="/seller/products/:id/edit" element={<SellerProductFormPage />} />
       </Routes>
     </>
   );
