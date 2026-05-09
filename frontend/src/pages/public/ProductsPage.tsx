@@ -14,6 +14,8 @@ function formatMoney(value: number, currency: string) {
 
 export function ProductsPage() {
   const accessToken = useAuthStore((state) => state.accessToken);
+  const user = useAuthStore((state) => state.user);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -25,7 +27,12 @@ export function ProductsPage() {
 
   async function handleAddToCart(productId: string) {
     if (!accessToken) {
-      setMessage('Debes iniciar sesión para agregar al carrito.');
+      setMessage('Debes iniciar sesión como customer para comprar.');
+      return;
+    }
+
+    if (user?.role !== 'customer') {
+      setMessage('Solo los usuarios customer pueden comprar.');
       return;
     }
 
@@ -41,7 +48,10 @@ export function ProductsPage() {
     <main className="min-h-screen p-4 md:p-8">
       <section className="mx-auto max-w-6xl">
         <h1 className="text-3xl font-bold">Productos</h1>
-        <p className="mt-2 text-slate-600">Catálogo público cargado desde el backend.</p>
+
+        <p className="mt-2 text-slate-600">
+          Catálogo público cargado desde el backend.
+        </p>
 
         {message && (
           <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
@@ -51,7 +61,10 @@ export function ProductsPage() {
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => (
-            <article key={product.id} className="rounded-2xl border border-slate-200 p-5 shadow-sm">
+            <article
+              key={product.id}
+              className="rounded-2xl border border-slate-200 p-5 shadow-sm"
+            >
               <p className="text-xs uppercase tracking-widest text-slate-500">
                 {product.category?.name ?? product.type}
               </p>
@@ -62,20 +75,37 @@ export function ProductsPage() {
                 {product.description}
               </p>
 
-              <div className="mt-4 flex items-center justify-between">
+              <div className="mt-4 flex items-center justify-between gap-3">
                 <span className="font-bold">
                   {formatMoney(product.priceCents, product.currency)}
                 </span>
 
-                <span className="text-sm text-slate-500">Stock: {product.stock}</span>
+                <span className="text-sm text-slate-500">
+                  Stock: {product.stock}
+                </span>
               </div>
 
-              <button
-                className="mt-4 w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
-                onClick={() => handleAddToCart(product.id)}
-              >
-                Agregar al carrito
-              </button>
+              {!accessToken ? (
+                <button
+                  className="mt-4 w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+                  onClick={() =>
+                    setMessage('Debes iniciar sesión como customer para comprar.')
+                  }
+                >
+                  Iniciar sesión para comprar
+                </button>
+              ) : user?.role === 'customer' ? (
+                <button
+                  className="mt-4 w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+                  onClick={() => void handleAddToCart(product.id)}
+                >
+                  Agregar al carrito
+                </button>
+              ) : (
+                <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-center text-sm text-slate-600">
+                  Solo los usuarios customer pueden comprar.
+                </div>
+              )}
             </article>
           ))}
         </div>
