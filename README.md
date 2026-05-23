@@ -63,7 +63,7 @@ REDIS_URL=redis://redis:6379
 JWT_ACCESS_SECRET=change_me_access_secret
 JWT_REFRESH_SECRET=change_me_refresh_secret
 
-FRONTEND_ORIGIN=http://localhost
+FRONTEND_ORIGIN=http://localhost:8080
 API_PREFIX=/api/v1
 VITE_API_URL=/api/v1
 ```
@@ -154,6 +154,37 @@ Usuarios de prueba:
 - Frontend directo: http://localhost:5173
 - Backend directo: http://localhost:3000/api/v1
 - Swagger, si `ENABLE_SWAGGER=true`: http://localhost:3000/api/v1/docs
+
+## VirtualBox lab network
+
+Red recomendada:
+
+- Ubuntu Server VM:
+  - Adaptador 1: NAT
+  - Adaptador 2: Host-only
+  - IP Host-only: `192.168.56.10`
+- Kali VM:
+  - Adaptador 1: NAT
+  - Adaptador 2: Host-only
+  - IP por DHCP o fija dentro de `192.168.56.0/24`
+- Windows/dispositivo principal:
+  - Host-only adapter: `192.168.56.1`
+
+Target principal:
+
+- Web: http://192.168.56.10:8080
+- Swagger/API: http://192.168.56.10:8080/api/v1/docs
+- OWASP ZAP target: http://192.168.56.10:8080
+
+Variables `.env` para Ubuntu Server:
+
+```env
+FRONTEND_ORIGIN=http://192.168.56.10:8080
+VITE_API_URL=/api/v1
+VITE_PUBLIC_HOST=192.168.56.10
+VITE_HMR_CLIENT_PORT=8080
+VITE_HMR_PROTOCOL=ws
+```
 
 ## Comandos utiles
 
